@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Doctor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container my-5">
+        <h2>Doctor Details</h2>
+        <div>
+            <p><strong>Name:</strong> <span id="name"></span></p>
+            <p><strong>Specialist:</strong> <span id="specialist"></span></p>
+            <p><strong>Contact Number:</strong> <span id="contact_number"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+        </div>
+        <a class="btn btn-secondary" href="../index.html">Back to List</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const doctorId = params.get('id');
+
+        async function fetchDoctor() {
+            try {
+                const response = await fetch(`http://localhost:5000/api/doctors/${doctorId}`);
+                const doctor = await response.json();
+
+                document.getElementById('name').textContent = doctor.name;
+                document.getElementById('specialist').textContent = doctor.specialist;
+                document.getElementById('contact_number').textContent = doctor.contact_number;
+                document.getElementById('email').textContent = doctor.email;
+            } catch (error) {
+                console.error('Error fetching doctor:', error);
+            }
+        }
+
+        fetchDoctor();
+    </script>
+</body>
+
+</html>

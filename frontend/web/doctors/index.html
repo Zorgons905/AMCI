@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors List</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container my-5">
+        <h2>Doctors List</h2>
+        <a class="btn btn-primary mb-3" href="create/index.html" role="button">New Doctor</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>User_ID</th>
+                    <th>Doctor_ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Specialist</th>
+                    <th>Contact Number</th>
+                    <th>Deleted</th>
+                    <th>CreatedAt</th>
+                    <th>UpdatedAt</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="doctorsTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { softDeleteDoctor } from './sofDel/index.js';
+        import { permanentlyDeleteDoctor } from './delete/index.js';
+
+        // Function to handle the delete confirmation
+        window.confirmAndDeleteDoctor = async function(id) {
+            console.log("Delete button clicked"); // Debugging line to check if function is being called
+            const userConfirmed = window.confirm("Are you sure you want to permanently delete this doctor?");
+            
+            if (userConfirmed) {
+                try {
+                    // Send the DELETE request
+                    const response = await fetch(`http://localhost:5000/doctors/${id}`, {
+                        method: 'DELETE',
+                    });
+                    
+                    if (response.ok) {
+                        alert('Doctor permanently deleted');
+                        loadDoctors(); // Reload the doctors list after successful deletion
+                    } else {
+                        alert('Failed to delete doctor');
+                    }
+                } catch (error) {
+                    console.error('Error permanently deleting doctor:', error);
+                    alert('Error deleting doctor');
+                }
+            } else {
+                console.log('Deletion canceled');
+            }
+        }
+
+        // Function to load doctors data
+        async function loadDoctors() {
+            try {
+                const response = await fetch('http://localhost:5000/doctors');
+                if (!response.ok) {
+                    console.error('Failed to load doctors', response.status, response.statusText);
+                    return;
+                }
+                const doctors = await response.json();
+                console.log('Doctors:', doctors);
+
+                const tableBody = document.getElementById('doctorsTableBody');
+                tableBody.innerHTML = '';
+
+                doctors.forEach((doctor, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${doctor.user_id}</td>
+                        <td>${doctor.doctor_id}</td>
+                        <td>${doctor.name}</td>
+                        <td>${doctor.email}</td>
+                        <td>${doctor.specialist}</td>
+                        <td>${doctor.contact_number}</td>
+                        <td>${doctor.deleted}</td>
+                        <td>${doctor.createdAt}</td>
+                        <td>${doctor.updatedAt}</td>
+                        <td>
+                            <a class="btn btn-success btn-sm" href="read/index.html?id=${doctor._id}"><i class='bx bx-show-alt'></i></a>
+                            <a class="btn btn-warning btn-sm text-white" href="update/index.html?id=${doctor._id}"><i class='bx bx-edit'></i></a>
+                            <a class="btn btn-danger btn-sm" href="" onclick="confirmAndDeleteDoctor('${doctor._id}')"><i class='bx bx-trash'></i></a>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+            }
+        }
+
+        window.onload = loadDoctors;
+    </script>
+</body>
+
+</html>

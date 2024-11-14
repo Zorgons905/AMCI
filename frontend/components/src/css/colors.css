@@ -1,0 +1,18 @@
+:root {
+    --dang: #dc3545;    
+    --dang-d: #ff0080;
+    --succ: #01a131;
+    --succ-d: #058265;
+    --warn: #ffc107;
+    --warn-d: #ff8401;
+    --info: #4285F4;
+    --info-d: #053480;
+    --lite: #cccccc;
+    --lite-s: #f7f7f7;
+    --lite-d: #8b8b8b;
+    --dark: #2f2f2f;
+    --dark-s: #424242;
+    --dark-d: #212121;
+    --w: #ffffff;
+    --b: #000000;
+}
